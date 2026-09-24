@@ -13,11 +13,22 @@
 
 纯截屏方案：不读写游戏内存、不抓封包，不干预游戏进程。由于坐标相对游戏窗口，移动窗口、拖到别的显示器都不影响抓取。
 
-## 安装
+## 安装与运行
 
-- Windows 10/11，Python 3.9+（64 位）
-- 安装依赖：`py -3 -m pip install -r requirements.txt`
-- 启动：`py -3 main.py`（或双击 `启动AutoTalk.bat`）
+### 方式一：一键启动（推荐小白使用）
+- 确保电脑已安装 64 位 Python（推荐 3.10 ~ 3.12，安装时请勾选 **Add python.exe to PATH**）。
+- 直接双击运行目录下的 **`启动AutoTalk.bat`**。
+  - 脚本会自动检测运行环境，并在首次运行时自动调用国内镜像源安装全部必要依赖，安装完成后自动启动。
+
+### 方式二：手动命令行安装
+- 推荐使用国内镜像源加速下载：
+  ```bash
+  py -3 -m pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+  ```
+- 启动：
+  ```bash
+  py -3 main.py
+  ```
 
 ## 配置 AI
 
@@ -44,6 +55,11 @@
 
 ## 常见问题
 
+- **依赖安装报错 / pip 报错（常见四类原因与解决方案）**：
+  1. **国内网络下载超时（ReadTimeout / ConnectionReset）**：`onnxruntime` 等模型库体积较大，直接从官方 PyPI 下载极易超时。请双击 `启动AutoTalk.bat`（内置清华镜像）或手动指定镜像：`pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple`。
+  2. **Python 版本过新（如 Python 3.13）**：部分底层 C/C++ 依赖库（如 `onnxruntime`）官方尚未为 Python 3.13+ 提供预编译二进制包，pip 会尝试源码编译并报错 `Microsoft Visual C++ 14.0 is required`。**强烈建议安装官方推荐的 Python 3.10、3.11 或 3.12（64 位）**。
+  3. **Python 为 32 位版本**：OCR 核心依赖仅支持 64 位环境，若安装了 32 位 Python 会报 `No matching distribution found`。请卸载并重新安装 64 位（x86-64 / amd64）Python。
+  4. **缺少微软运行库（启动提示 DLL load failed）**：若依赖安装成功但运行时报 `DLL load failed while importing onnxruntime_pybind11_state`，说明系统缺少 VC++ 运行库，请下载安装微软官方 [Visual C++ 2015-2022 Redistributable (x64)](https://aka.ms/vs/17/release/vc_redist.x64.exe)。
 - **识别不到文字**：确认框选覆盖对话文本；对话区域不要被本挂件或其他窗口遮挡（截屏是截"屏幕所见"）。
 - **列表里找不到游戏窗口**：独占全屏模式没有标准窗口句柄，请把游戏切换为"窗口化"或"无边框窗口"。
 - **游戏窗口被移动/换显示器**：无需任何操作，坐标相对窗口，抓取时自动重新定位。
