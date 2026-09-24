@@ -7,6 +7,8 @@ import sys
 
 def check_python_version():
     """检查 Python 版本，拦截不支持的 Python 3.13+"""
+    if getattr(sys, "frozen", False):
+        return
     if sys.version_info >= (3, 13):
         print("=" * 68)
         print(f"[AutoTalk 环境错误] 当前 Python 版本为 {sys.version.split()[0]} (不支持)")
@@ -27,6 +29,8 @@ def check_python_version():
 
 def ensure_dependencies():
     """检查必要依赖，若缺失则自动通过国内镜像安装。"""
+    if getattr(sys, "frozen", False):
+        return
     packages = [
         ("requests", "requests>=2.28"),
         ("PIL", "Pillow>=9.5"),
@@ -112,12 +116,17 @@ def _enable_dpi_awareness():
 
 def main():
     _enable_dpi_awareness()
-    check_python_version()
-    ensure_dependencies()
+    if not getattr(sys, "frozen", False):
+        check_python_version()
+        ensure_dependencies()
+
     from autotalk.widget import AutoTalkApp
 
     AutoTalkApp().run()
 
 
 if __name__ == "__main__":
+    import multiprocessing
+
+    multiprocessing.freeze_support()
     main()
