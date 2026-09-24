@@ -6,6 +6,13 @@ import subprocess
 import sys
 import zipfile
 
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DIST_DIR = os.path.join(ROOT_DIR, "dist")
 BUILD_DIR = os.path.join(ROOT_DIR, "build")
@@ -78,21 +85,23 @@ def build():
     if os.path.exists(readme):
         shutil.copy2(readme, app_dir)
 
-    # 压缩为 Zip 方便用户一键下载
-    zip_path = os.path.join(DIST_DIR, "AutoTalk_v1.0_Windows_x64_便携绿色版.zip")
-    print("\n正在压缩绿色整合包...")
-    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
+    # 压缩为 Zip 方便用户一键下载 (输出标准 ASCII 命名以兼容海外/CI 服务器)
+    zip_path_en = os.path.join(DIST_DIR, "AutoTalk-v1.0-Windows-x64-Portable.zip")
+    zip_path_cn = os.path.join(DIST_DIR, "AutoTalk_v1.0_Windows_x64_便携绿色版.zip")
+    print("\nCompressing portable package...")
+    with zipfile.ZipFile(zip_path_en, "w", zipfile.ZIP_DEFLATED) as zf:
         for root, dirs, files in os.walk(app_dir):
             for file in files:
                 full_path = os.path.join(root, file)
                 rel_path = os.path.relpath(full_path, DIST_DIR)
                 zf.write(full_path, rel_path)
+    shutil.copy2(zip_path_en, zip_path_cn)
 
-    size_mb = os.path.getsize(zip_path) / (1024 * 1024)
+    size_mb = os.path.getsize(zip_path_en) / (1024 * 1024)
     print("=" * 60)
-    print(f"打包成功！整合包路径: {zip_path}")
-    print(f"压缩包大小: {size_mb:.2f} MB")
-    print("解压后双击 AutoTalk.exe 即可直接运行，无需安装 Python！")
+    print(f"Build complete! Package: {zip_path_en}")
+    print(f"Package size: {size_mb:.2f} MB")
+    print("Double click AutoTalk.exe to run directly without installing Python!")
     print("=" * 60)
 
 
