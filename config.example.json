@@ -1,0 +1,13 @@
+{
+  "api_base": "https://api.deepseek.com",
+  "api_key": "",
+  "model": "deepseek-chat",
+  "hotkey": "ctrl+alt+t",
+  "window": null,
+  "region": null,
+  "watch_interval_sec": 3.0,
+  "history_limit": 6,
+  "save_captures": false,
+  "temperature": 0.7,
+  "max_tokens": 4096
+}

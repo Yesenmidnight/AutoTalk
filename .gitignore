@@ -1,0 +1,27 @@
+# Local configuration with secrets and API keys
+config.json
+*.key
+.env
+
+# Logs and runtime outputs
+*.log
+autotalk_api.log
+history/
+captures/
+
+# Python compiled files and cache
+__pycache__/
+*.py[cod]
+*.pyc
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
