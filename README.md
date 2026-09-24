@@ -13,21 +13,25 @@
 
 纯截屏方案：不读写游戏内存、不抓封包，不干预游戏进程。由于坐标相对游戏窗口，移动窗口、拖到别的显示器都不影响抓取。
 
-## 安装与运行
+## 下载与运行
 
-### 方式一：一键启动（推荐小白使用）
-- 确保电脑已安装 64 位 Python（推荐 3.10 ~ 3.12，安装时请勾选 **Add python.exe to PATH**）。
+### 方式一：免安装绿色版（强烈推荐普通玩家使用，无需安装 Python）
+- 前往 GitHub [Releases 发布页面](https://github.com/Yesenmidnight/AutoTalk/releases) 下载最新压缩包：`AutoTalk_v1.0_Windows_x64_便携绿色版.zip`。
+- 解压后直接双击 **`AutoTalk.exe`** 即可直接使用！已完整内置 Python 3.12 运行环境与离线 OCR 识别模型，开箱即用，无需配置任何 Python 环境。
+
+### 方式二：源码一键启动（适合已有 Python 环境的用户）
+- 确保电脑安装有 64 位的 Python 3.10 ~ 3.12。
 - 直接双击运行目录下的 **`启动AutoTalk.bat`**。
-  - 脚本会自动检测运行环境，并在首次运行时自动调用国内镜像源安装全部必要依赖，安装完成后自动启动。
+  - 脚本会自动检测兼容的 Python 版本，若缺失依赖会自动调用国内镜像源安装并拉起程序。
 
-### 方式二：手动命令行安装
-- 推荐使用国内镜像源加速下载：
+### 方式三：源码手动安装
+- 使用国内镜像源加速安装：
   ```bash
-  py -3 -m pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+  py -3.12 -m pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
   ```
 - 启动：
   ```bash
-  py -3 main.py
+  py -3.12 main.py
   ```
 
 ## 配置 AI

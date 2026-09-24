@@ -1,14 +1,18 @@
 """历史记录管理：按每次打开软件的时间戳生成 Markdown 归档文件。"""
 
 import os
+import sys
 import time
 from datetime import datetime
 
 from .config import cfg
 
-HISTORY_DIR = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "history"
-)
+if getattr(sys, "frozen", False):
+    ROOT_DIR = os.path.dirname(sys.executable)
+else:
+    ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+HISTORY_DIR = os.path.join(ROOT_DIR, "history")
 
 
 class HistoryRecorder:

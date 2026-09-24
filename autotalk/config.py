@@ -2,13 +2,15 @@
 
 import json
 import os
+import sys
 
-CONFIG_PATH = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config.json"
-)
-CONFIG_EXAMPLE_PATH = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config.example.json"
-)
+if getattr(sys, "frozen", False):
+    ROOT_DIR = os.path.dirname(sys.executable)
+else:
+    ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+CONFIG_PATH = os.path.join(ROOT_DIR, "config.json")
+CONFIG_EXAMPLE_PATH = os.path.join(ROOT_DIR, "config.example.json")
 
 DEFAULTS = {
     "api_base": "https://open.bigmodel.cn/api/coding/paas/v4",

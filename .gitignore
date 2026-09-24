@@ -25,3 +25,10 @@ env/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Build and packaging
+dist/
+build/
+*.spec
+.build_venv/
+
