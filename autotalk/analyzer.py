@@ -195,15 +195,33 @@ def analyze(history, current, timeout=90):
         "temperature": float(cfg.get("temperature", 0.7)),
         "max_tokens": max_tok,
     }
-    resp = requests.post(
-        url,
-        json=payload,
-        headers={
-            "Authorization": "Bearer " + api_key,
-            "Content-Type": "application/json",
-        },
-        timeout=timeout,
-    )
+    try:
+        resp = requests.post(
+            url,
+            json=payload,
+            headers={
+                "Authorization": "Bearer " + api_key,
+                "Content-Type": "application/json",
+            },
+            timeout=timeout,
+        )
+    except requests.exceptions.SSLError as e:
+        raise RuntimeError(
+            "连接大模型服务器失败（SSL / 证书握手异常中断）：\n"
+            "【快速排查】：\n"
+            "1. 若开启了科学上网代理（Clash/V2Ray/VPN）或游戏加速器，请关闭或切换为「规则模式/绕过大陆」；\n"
+            "   (api.deepseek.com 位于国内，被海外节点接管易遭防火墙强制断开)\n"
+            "2. 检查 Windows 系统设置是否残留了未开启的本地代理端口；\n"
+            "3. 若 DeepSeek 官方服务瞬时拥堵，请稍后点击「重新分析」重试。"
+        ) from e
+    except requests.exceptions.Timeout:
+        raise RuntimeError(f"大模型响应超时（超过 {timeout} 秒），请检查网络连接后重试。")
+    except requests.exceptions.ConnectionError as e:
+        raise RuntimeError(
+            "网络连接失败，无法访问大模型 API 服务器。\n"
+            "请检查网络连接、关闭干扰代理或稍后重试。"
+        ) from e
+
     if resp.status_code != 200:
         msg = "接口返回 %s: %s" % (resp.status_code, resp.text[:300])
         if resp.status_code == 401:
