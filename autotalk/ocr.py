@@ -11,9 +11,13 @@ def _get_engine():
     if _engine is None:
         try:
             from rapidocr_onnxruntime import RapidOCR
-        except ImportError:
-            from rapidocr import RapidOCR
-        _engine = RapidOCR()
+            _engine = RapidOCR()
+        except Exception as e:
+            try:
+                from rapidocr import RapidOCR
+                _engine = RapidOCR()
+            except Exception:
+                raise e
     return _engine
 
 

@@ -25,7 +25,6 @@ EXCLUDE_MODULES = [
     "pandas",
     "matplotlib",
     "seaborn",
-    "cv2",
     "PyQt5",
     "PyQt6",
     "PySide2",
@@ -85,11 +84,21 @@ def build():
     if os.path.exists(readme):
         shutil.copy2(readme, app_dir)
 
+    # 剔除未使用的 OpenCV 视频编解码大体积 DLL (节约近 30MB)
+    cv2_dir = os.path.join(app_dir, "_internal", "cv2")
+    if os.path.exists(cv2_dir):
+        for f in os.listdir(cv2_dir):
+            if f.startswith("opencv_videoio_ffmpeg") and f.endswith(".dll"):
+                try:
+                    os.remove(os.path.join(cv2_dir, f))
+                except Exception:
+                    pass
+
     # 压缩为 Zip 方便用户一键下载 (输出标准 ASCII 命名以兼容海外/CI 服务器)
     zip_path_en = os.path.join(DIST_DIR, "AutoTalk-v1.0-Windows-x64-Portable.zip")
     zip_path_cn = os.path.join(DIST_DIR, "AutoTalk_v1.0_Windows_x64_便携绿色版.zip")
     print("\nCompressing portable package...")
-    with zipfile.ZipFile(zip_path_en, "w", zipfile.ZIP_DEFLATED) as zf:
+    with zipfile.ZipFile(zip_path_en, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
         for root, dirs, files in os.walk(app_dir):
             for file in files:
                 full_path = os.path.join(root, file)
